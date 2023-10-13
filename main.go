@@ -11,6 +11,7 @@ import (
 func main() {
 	fmt.Print("Start Server")
 
+	
 	http.HandleFunc("/main", mainpage.MainPageHandler)
 	http.HandleFunc("/login", login.LoginHandler)
 
