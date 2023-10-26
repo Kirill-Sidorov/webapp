@@ -1,20 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"webapp/handlers/mainpage"
-	"webapp/handlers/login"
+    "database/sql"
+    "fmt"
+    _ "github.com/lib/pq"
 )
 
 func main() {
-	fmt.Print("Start Server")
-
-	
-	http.HandleFunc("/main", mainpage.MainPageHandler)
-	http.HandleFunc("/login", login.LoginHandler)
-
-	err := http.ListenAndServe("localhost:8080", nil)
-	log.Fatal(err)
+	connStr := "user=dbuser password=111 dbname=mydb sslmode=disable"
+    db, err := sql.Open("postgres", connStr)
+    if err != nil {
+        panic(err)
+    } 
+    defer db.Close()
+     
+    result, err := db.Exec("insert into Products (model, company, price) values ('iPhone X', $1, $2)", 
+        "Apple", 72000)
+    if err != nil{
+        panic(err)
+    }
+    fmt.Println(result.LastInsertId())  // не поддерживается
+    fmt.Println(result.RowsAffected())  // количество добавленных строк
 }
